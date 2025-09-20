@@ -40,7 +40,7 @@ namespace MiniOnlineLibrary.Application.Services
             await _uow.SaveChangesAsync();
 
 
-            return new TransactionDto(tx.TransactionId, tx.UserId, tx.BookId, tx.BorrowDate, tx.ReturnDate, tx.Status.ToString());
+            return new TransactionDto(tx.TransactionId, tx.UserId, "","",tx.BookId,"", tx.BorrowDate, tx.ReturnDate, tx.Status);
         }
 
 
@@ -52,13 +52,13 @@ namespace MiniOnlineLibrary.Application.Services
             tx.Status = BorrowStatus.Returned;
             _uow.Transactions.Update(tx);
             await _uow.SaveChangesAsync();
-            return new TransactionDto(tx.TransactionId, tx.UserId, tx.BookId, tx.BorrowDate, tx.ReturnDate, tx.Status.ToString());
+            return new TransactionDto(tx.TransactionId, tx.UserId, "","" , tx.BookId, "", tx.BorrowDate, tx.ReturnDate, tx.Status);
         }
 
 
         public async Task<IEnumerable<TransactionDto>> GetBorrowedByUserAsync(int userId)
         {
-            var txs = (await _uow.Transactions.GetAllAsync()).Where(t => t.UserId == userId).ToList();
+            var txs = (await _uow.Transactions.GetAllAsync("User,Book")).Where(t => t.UserId == userId).ToList();
             // compute overdue dynamically
             var list = txs.Select(t =>
             {
@@ -67,7 +67,7 @@ namespace MiniOnlineLibrary.Application.Services
                 {
                     status = BorrowStatus.Overdue;
                 }
-                return new TransactionDto(t.TransactionId, t.UserId, t.BookId, t.BorrowDate, t.ReturnDate, status.ToString());
+                return new TransactionDto(t.TransactionId, t.UserId, t.User.Name,t.User.Email, t.BookId,t.Book.Title, t.BorrowDate, t.ReturnDate, status);
             });
             return list;
         }
@@ -75,15 +75,29 @@ namespace MiniOnlineLibrary.Application.Services
 
         public async Task<IEnumerable<TransactionDto>> GetAllAsync()
         {
-            var txs = await _uow.Transactions.GetAllAsync();
-            return txs.Select(t => new TransactionDto(t.TransactionId, t.UserId, t.BookId, t.BorrowDate, t.ReturnDate, t.Status.ToString()));
+            var txs = await _uow.Transactions.GetAllAsync("User,Book");
+             
+
+            return txs.Select(t => new TransactionDto(
+                t.TransactionId,
+                t.UserId,
+                t.User?.Name,
+                t.User?.Email,
+                t.BookId,
+                t.Book?.Title,
+                t.BorrowDate,
+                t.ReturnDate,
+                t.Status 
+
+
+            ));
         }
 
 
         public async Task<IEnumerable<TransactionDto>> GetOverdueAsync()
         {
             var txs = (await _uow.Transactions.GetAllAsync()).Where(t => t.Status == BorrowStatus.Borrowed && t.BorrowDate + _borrowPeriod < DateTime.UtcNow);
-            return txs.Select(t => new TransactionDto(t.TransactionId, t.UserId, t.BookId, t.BorrowDate, t.ReturnDate, BorrowStatus.Overdue.ToString()));
+            return txs.Select(t => new TransactionDto(t.TransactionId, t.UserId, t.User.Name, t.User.Email, t.BookId, t.Book.Title, t.BorrowDate, t.ReturnDate, BorrowStatus.Overdue));
         }
     }
 }

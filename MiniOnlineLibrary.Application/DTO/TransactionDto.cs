@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MiniOnlineLibrary.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace MiniOnlineLibrary.Application.DTO
 {
     public record BorrowRequestDto(int BookId, int UserId);
     public record ReturnRequestDto(int TransactionId);
-    public record TransactionDto(int TransactionId, int UserId, int BookId, DateTime BorrowDate, DateTime? ReturnDate, string Status);
+    public record TransactionDto(int TransactionId, int UserId,string? UserName,string? UserEmail ,int BookId,string? BookTitle, DateTime BorrowDate, DateTime? ReturnDate, BorrowStatus Status);
  
   
 }
