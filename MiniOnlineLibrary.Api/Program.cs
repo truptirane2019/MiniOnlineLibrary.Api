@@ -77,7 +77,17 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero // optional: reduce default 5 min tolerance
     };
 });
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularClient",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Angular app origin
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 // Authorization
 builder.Services.AddAuthorization();
 
@@ -88,7 +98,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowAngularClient");
 app.UseHttpsRedirection();
 
 // Order matters: Authentication before Authorization
