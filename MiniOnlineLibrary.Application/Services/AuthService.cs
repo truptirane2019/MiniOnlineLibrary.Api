@@ -37,8 +37,7 @@ namespace MiniOnlineLibrary.Application.Services
             user.PasswordHash = _hasher.HashPassword(user, dto.Password);
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
-            var token = GenerateJwt(user);
-            return new AuthResultDto(token, user.UserId, user.Role, user.Name);
+            return new AuthResultDto("", user.UserId, user.Role, user.Name);
         }
 
 
