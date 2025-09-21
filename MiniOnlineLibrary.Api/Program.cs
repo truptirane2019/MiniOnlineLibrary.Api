@@ -4,13 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MiniOnlineLibrar.Infrastructure;
 using MiniOnlineLibrar.Infrastructure.Repositories;
+using MiniOnlineLibrary.Api.Middlewares;
 using MiniOnlineLibrary.Application.Interfaces;
 using MiniOnlineLibrary.Application.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services
+ // Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
  
@@ -29,6 +29,7 @@ builder.Services.AddDbContext<MiniLibraryDbContext>(opt =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAPILogService, APILogService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -98,6 +99,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ApiLoggingMiddleware>();
+
 app.UseCors("AllowAngularClient");
 app.UseHttpsRedirection();
 

@@ -18,7 +18,7 @@ namespace MiniOnlineLibrar.Infrastructure
         public DbSet<Book> Books => Set<Book>();
         public DbSet<BorrowTransaction> BorrowTransactions => Set<BorrowTransaction>();
 
-
+        public DbSet<api_logs> api_logs => Set<api_logs>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,7 +37,11 @@ namespace MiniOnlineLibrar.Infrastructure
                 b.HasKey(x => x.BookId);
                 b.Property(x => x.CreatedAt);//.HasDefaultValueSql("GETUTCDATE()");
             });
-
+            modelBuilder.Entity<api_logs>(b =>
+            {
+                b.HasKey(x => x.Api_Log_Id);
+                b.Property(x => x.CreatedAt);//.HasDefaultValueSql("GETUTCDATE()");
+            });
 
             modelBuilder.Entity<BorrowTransaction>(b =>
             {

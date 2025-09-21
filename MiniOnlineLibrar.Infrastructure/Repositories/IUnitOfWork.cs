@@ -12,6 +12,7 @@ namespace MiniOnlineLibrar.Infrastructure.Repositories
         IRepository<User> Users { get; }
         IRepository<Book> Books { get; }
         IRepository<BorrowTransaction> Transactions { get; }
+        IRepository<api_logs> APILogs { get; }
         Task<int> SaveChangesAsync();
     }
 }

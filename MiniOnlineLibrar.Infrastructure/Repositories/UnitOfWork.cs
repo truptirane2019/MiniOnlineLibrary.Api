@@ -13,7 +13,7 @@ namespace MiniOnlineLibrar.Infrastructure.Repositories
         public IRepository<User> Users { get; }
         public IRepository<Book> Books { get; }
         public IRepository<BorrowTransaction> Transactions { get; }
-
+        public IRepository<api_logs> APILogs { get; }
 
         public UnitOfWork(MiniLibraryDbContext ctx)
         {
@@ -21,6 +21,7 @@ namespace MiniOnlineLibrar.Infrastructure.Repositories
             Users = new Repository<User>(ctx);
             Books = new Repository<Book>(ctx);
             Transactions = new Repository<BorrowTransaction>(ctx);
+            APILogs = new Repository<api_logs>(ctx);
         }
 
 

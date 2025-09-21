@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniOnlineLibrar.Infrastructure;
 
@@ -11,9 +12,11 @@ using MiniOnlineLibrar.Infrastructure;
 namespace MiniOnlineLibrar.Infrastructure.Migrations
 {
     [DbContext(typeof(MiniLibraryDbContext))]
-    partial class MiniLibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250921184734_addedapilog")]
+    partial class addedapilog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,6 +165,8 @@ namespace MiniOnlineLibrar.Infrastructure.Migrations
 
                     b.HasKey("Api_Log_Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("api_logs");
                 });
 
@@ -180,6 +185,15 @@ namespace MiniOnlineLibrar.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MiniOnlineLibrary.Domain.Entities.api_logs", b =>
+                {
+                    b.HasOne("MiniOnlineLibrary.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
